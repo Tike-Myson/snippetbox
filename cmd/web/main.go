@@ -3,6 +3,8 @@ package main
 import (
 	"database/sql"
 	"flag"
+	"github.com/Tike-Myson/snippetbox/pkg/models/mysql"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -19,6 +21,8 @@ var (
 type application struct {
 	errorLog *log.Logger
 	infoLog  *log.Logger
+	snippets *mysql.SnippetModel
+	templateCache map[string]*template.Template
 }
 
 func main() {
@@ -34,14 +38,25 @@ func main() {
 		errorLog.Fatal(err)
 	}
 
+	db.SetMaxOpenConns(100)
+	db.SetMaxIdleConns(5)
+
 	// We also defer a call to db.Close(), so that the connection pool is closed
 	// before the main() function exits.
 	defer db.Close()
+
+	// Initialize a new template cache...
+	templateCache, err := newTemplateCache("./ui/html/")
+	if err != nil {
+		errorLog.Fatal(err)
+	}
 
 	// Initialize a new instance of application containing the dependencies.
 	app := &application{
 		errorLog: errorLog,
 		infoLog:  infoLog,
+		snippets: &mysql.SnippetModel{DB: db},
+		templateCache: templateCache,
 	}
 
 	// Swap the route declarations to use the application struct's methods as the
