@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"github.com/justinas/nosurf"
 	"net/http"
 	"runtime/debug"
 	"time"
@@ -35,7 +36,10 @@ func (app *application) addDefaultData(td *templateData, r *http.Request) *templ
 	if td == nil {
 		td = &templateData{}
 	}
+	td.CSRFToken = nosurf.Token(r)
 	td.CurrentYear = time.Now().Year()
+	td.Flash = app.session.PopString(r, "flash")
+	td.IsAuthenticated = app.isAuthenticated(r)
 	return td
 }
 
@@ -62,4 +66,8 @@ func (app *application) render(w http.ResponseWriter, r *http.Request, name stri
 	// is another time where we pass our http.ResponseWriter to a function that
 	// takes an io.Writer.
 	buf.WriteTo(w)
+}
+
+func (app *application) isAuthenticated(r *http.Request) bool {
+	return app.session.Exists(r, "authenticatedUserID")
 }

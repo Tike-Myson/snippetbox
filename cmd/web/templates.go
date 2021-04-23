@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/Tike-Myson/snippetbox/pkg/forms"
 	"github.com/Tike-Myson/snippetbox/pkg/models"
 	"html/template"
 	"path/filepath"
@@ -8,9 +9,13 @@ import (
 )
 
 type templateData struct {
+	CSRFToken       string
 	CurrentYear int
-	Snippet  *models.Snippet
-	Snippets []*models.Snippet
+	Form        *forms.Form
+	IsAuthenticated bool
+	Snippet     *models.Snippet
+	Snippets    []*models.Snippet
+	Flash       string
 }
 
 func humanDate(t time.Time) string {
