@@ -65,7 +65,7 @@ func main() {
 	app := &application{
 		errorLog: errorLog,
 		infoLog:  infoLog,
-		session: session,
+		session:       session,
 		snippets: &mysql.SnippetModel{DB: db},
 		templateCache: templateCache,
 		users:         &mysql.UserModel{DB: db},

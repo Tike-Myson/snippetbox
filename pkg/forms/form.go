@@ -10,9 +10,6 @@ import (
 
 var EmailRX = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 
-// Create a custom Form struct, which anonymously embeds a url.Values object
-// (to hold the form data) and an Errors field to hold any validation errors
-// for the form data.
 type Form struct {
 	url.Values
 	Errors errors
@@ -36,10 +33,6 @@ func (f *Form) MatchesPattern(field string, pattern *regexp.Regexp) {
 	if !pattern.MatchString(value) {
 		f.Errors.Add(field, "This field is invalid")
 	}
-}
-
-func (f *Form) Valid() bool {
-	return len(f.Errors) == 0
 }
 
 func New(data url.Values) *Form {
@@ -79,4 +72,8 @@ func (f *Form) PermittedValues(field string, opts ...string) {
 		}
 	}
 	f.Errors.Add(field, "This field is invalid")
+}
+
+func (f *Form) Valid() bool {
+	return len(f.Errors) == 0
 }
