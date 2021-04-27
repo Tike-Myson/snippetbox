@@ -28,11 +28,13 @@ func (app *application) addDefaultData(td *templateData, r *http.Request) *templ
 		td = &templateData{}
 	}
 	td.CurrentYear = time.Now().Year()
+	td.IsAuthenticated = app.isAuthenticated(r)
 	td.Flash = app.session.PopString(r, "flash")
 	return td
 }
 
 func (app *application) render(w http.ResponseWriter, r *http.Request, name string, td *templateData) {
+	td = app.addDefaultData(td, r)
 	ts, ok := app.templateCache[name]
 	if !ok {
 		app.serverError(w, fmt.Errorf("The template %s does not exist", name))
@@ -48,4 +50,8 @@ func (app *application) render(w http.ResponseWriter, r *http.Request, name stri
 	}
 
 	buf.WriteTo(w)
+}
+
+func (app *application) isAuthenticated(r *http.Request) bool {
+	return app.session.Exists(r, "authenticatedUserID")
 }
