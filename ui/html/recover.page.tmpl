@@ -1,0 +1,29 @@
+{{template "base" .}}
+
+{{define "title"}}Signup{{end}}
+
+{{define "main"}}
+<form action='/user/recover-password' method='POST' novalidate>
+    <!-- Include the CSRF token -->
+    <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
+    {{with .Form}}
+        <div>
+            <label>Email:</label>
+            {{with .Errors.Get "email"}}
+                <label class='error'>{{.}}</label>
+            {{end}}
+            <input type='email' name='email' value='{{.Get "email"}}'>
+        </div>
+        <div>
+            <label>Recent code:</label>
+                        {{with .Errors.Get "email"}}
+                            <label class='error'>{{.}}</label>
+                        {{end}}
+                        <input type='email' name='email' value='{{.Get "email"}}'>
+        </div>
+        <div>
+            <input type='submit' value='Submit'>
+        </div>
+    {{end}}
+</form>
+{{end}}

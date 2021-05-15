@@ -25,6 +25,40 @@ func (f *Form) MinLength(field string, d int) {
 	}
 }
 
+func (f *Form) SafetyStandard(field string) {
+
+	IsUpperCaseCharContain := false
+	IsLowerCaseCharContain := false
+	IsSpecialCharContain := false
+
+	value := f.Get(field)
+	if value == "" {
+		return
+	}
+
+	r := []rune(value)
+
+	//checking for the content of numbers and letters of lower and upper case
+	for i := range r {
+		if r[i] >= 65 && r[i] <= 90 {
+			IsUpperCaseCharContain = true
+		}
+		if r[i] >= 97 && r[i] <= 125 {
+			IsLowerCaseCharContain = true
+		}
+		if r[i] >= 32 && r[i] <= 64 {
+			IsSpecialCharContain = true
+		}
+	}
+
+	//
+	if !(IsSpecialCharContain && IsLowerCaseCharContain && IsUpperCaseCharContain) {
+		f.Errors.Add(field, fmt.Sprintf("Weak password (use numbers, upper and lower case chars, also special symbols)"))
+	}
+
+
+}
+
 func (f *Form) MatchesPattern(field string, pattern *regexp.Regexp) {
 	value := f.Get(field)
 	if value == "" {

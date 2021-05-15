@@ -25,6 +25,8 @@ func (app *application) routes() http.Handler {
 	mux.Get("/user/profile", dynamicMiddleware.Append(app.requireAuthentication).ThenFunc(app.userProfile))
 	mux.Get("/user/change-password", dynamicMiddleware.Append(app.requireAuthentication).ThenFunc(app.changePasswordForm))
 	mux.Post("/user/change-password", dynamicMiddleware.Append(app.requireAuthentication).ThenFunc(app.changePassword))
+	mux.Get("/user/recover-password", dynamicMiddleware.ThenFunc(app.recoverPasswordForm))
+	mux.Post("/user/recover-password", dynamicMiddleware.ThenFunc(app.recoverPassword))
 
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	mux.Get("/static/", http.StripPrefix("/static", fileServer))

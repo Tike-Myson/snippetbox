@@ -21,6 +21,17 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func (app *application) recoverPasswordForm(w http.ResponseWriter, r *http.Request) {
+	app.render(w, r, "recover.page.tmpl", &templateData{
+		Form: forms.New(nil),
+	})
+}
+
+func (app *application) recoverPassword(w http.ResponseWriter, r *http.Request) {
+
+}
+
+
 func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
 	if err != nil || id < 1 {
@@ -99,6 +110,8 @@ func (app *application) signupUser(w http.ResponseWriter, r *http.Request) {
 	form.MaxLength("email", 255)
 	form.MatchesPattern("email", forms.EmailRX)
 	form.MinLength("password", 10)
+	form.SafetyStandard("password")
+
 
 	if !form.Valid() {
 		app.render(w, r, "signup.page.tmpl", &templateData{Form: form})
@@ -109,6 +122,9 @@ func (app *application) signupUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if errors.Is(err, models.ErrDuplicateEmail) {
 			form.Errors.Add("email", "Address is already in use")
+			app.render(w, r, "signup.page.tmpl", &templateData{Form: form})
+		} else if errors.Is(err, models.ErrDuplicateUsername) {
+			form.Errors.Add("name", "Address is already in use")
 			app.render(w, r, "signup.page.tmpl", &templateData{Form: form})
 		} else {
 			app.serverError(w, err)
@@ -196,6 +212,7 @@ func (app *application) changePassword(w http.ResponseWriter, r *http.Request) {
 	form := forms.New(r.PostForm)
 	form.Required("currentPassword", "newPassword", "newPasswordConfirmation")
 	form.MinLength("newPassword", 10)
+	form.SafetyStandard("newPassword")
 	if form.Get("newPassword") != form.Get("newPasswordConfirmation") {
 		form.Errors.Add("newPasswordConfirmation", "Passwords do not match")
 	}

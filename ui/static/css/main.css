@@ -39,6 +39,10 @@ h1 a {
     position: relative;
 }
 
+.button-group {
+    display: inline-block;
+}
+
 h1 a:hover {
     text-decoration: none;
     color: #34495E;
