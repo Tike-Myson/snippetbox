@@ -101,7 +101,8 @@ func main() {
 	}
 
 	infoLog.Printf("Server run on https://127.0.0.1%s\n", *addr)
-	err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
+	err = srv.ListenAndServe()
+	//err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
 	errorLog.Fatal(err)
 }
 
