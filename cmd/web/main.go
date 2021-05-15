@@ -46,7 +46,7 @@ type application struct {
 
 func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
-	dsn := flag.String("dsn", "web:nm2000kz@/snippetbox?parseTime=true", "MySQL data source name")
+	dsn := flag.String("dsn", "nurtilek:nm2000kz@/snippetbox?parseTime=true", "MySQL data source name")
 	secret := flag.String("secret", "s6Ndh+pPbnzHbS*+9Pk8qGWhTzbpa@ge", "Secret key")
 	flag.Parse()
 
@@ -100,7 +100,7 @@ func main() {
 		WriteTimeout: 10 * time.Second,
 	}
 
-	infoLog.Printf("Server run on https://127.0.0.1%s\n", *addr)
+	infoLog.Printf("Server run on http://127.0.0.1%s\n", *addr)
 	err = srv.ListenAndServe()
 	//err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
 	errorLog.Fatal(err)
